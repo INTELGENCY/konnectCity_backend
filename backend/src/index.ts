@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import router from "./router";
 import cloudinary from 'cloudinary'
 import connectDB from '../config'
+import path from "path";
 const app = express();
 connectDB()
 
@@ -21,6 +22,11 @@ app.use(
 // app.use(compression());
 // app.use(cookieParser());
  app.use(bodyParser.json());
+
+// Serve the frontend application for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'build', 'index.html'));
+});
 
 const server = http.createServer(app);
 
