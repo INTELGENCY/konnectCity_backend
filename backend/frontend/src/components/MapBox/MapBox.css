@@ -1,0 +1,14 @@
+.park_marker {
+    width: 15px;
+    height: 15px;
+    background-color: #FF0000;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+}
+.junction_marker {
+    width: 15px;
+    height: 15px;
+    background-color: #4287f5;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+}
