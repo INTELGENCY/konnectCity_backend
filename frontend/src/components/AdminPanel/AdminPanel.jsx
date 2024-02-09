@@ -35,7 +35,7 @@ const AdminPanel = () => {
       console.log("the data  is", formData.get("data"));
       if (status === "draft") {
         let response = await axios.post(
-          "http://localhost:8080/api/admin/function/draft",
+          keys.api + "admin/function/draft",
           formData,
           config
         );
