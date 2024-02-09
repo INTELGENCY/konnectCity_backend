@@ -134,7 +134,7 @@ const AdminPanel = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDraft("published")}
+                  onClick={() => handleDraft("draft")}
                   className="btn btn-primary"
                 >
                   Published
