@@ -13,7 +13,8 @@ export default (req: Request, res: Response) => {
         message: "The requested API endpoint could not be found.",
       })
       .status(400);
-  let cloudFunctionToCall: any = cloudFunctions[cloudFunctionName];
+  const cloudFunctionToCall =
+    cloudFunctions[cloudFunctionName as keyof typeof cloudFunctions];
   if (typeof cloudFunctionToCall !== "function")
     return res.json({ error: "Internal error" }).status(500);
   return cloudFunctionToCall(req, res);
