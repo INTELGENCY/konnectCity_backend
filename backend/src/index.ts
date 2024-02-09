@@ -22,10 +22,11 @@ app.use(
 // app.use(compression());
 // app.use(cookieParser());
  app.use(bodyParser.json());
+ app.use(express.static(path.join(__dirname,'..','dist')));
 
 // Serve the frontend application for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
 });
 
 const server = http.createServer(app);
