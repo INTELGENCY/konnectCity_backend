@@ -6,11 +6,11 @@ import cors from "cors";
 // import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import router from "./router";
-import cloudinary from 'cloudinary'
-import connectDB from '../config'
+import cloudinary from "cloudinary";
+import connectDB from "../config";
 import path from "path";
 const app = express();
-connectDB()
+connectDB();
 
 app.use(
   cors({
@@ -21,21 +21,16 @@ app.use(
 
 // app.use(compression());
 // app.use(cookieParser());
- app.use(bodyParser.json());
- app.use(express.static(path.join(__dirname,'..','dist')));
-
-// Serve the frontend application for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
-});
+app.use(bodyParser.json());
+console.log({ __dirname });
 
 const server = http.createServer(app);
 
 cloudinary.v2.config({
-    cloud_name: 'dub9cug8j',
-    api_key: '557236423227666',
-    api_secret: 'JeKDZseL-HSzWDh4t8iFRvs0MCg',
-  });
+  cloud_name: "dub9cug8j",
+  api_key: "557236423227666",
+  api_secret: "JeKDZseL-HSzWDh4t8iFRvs0MCg",
+});
 
 // app.get("/", (req, res) => {
 //     res.send("Hello, World!"); // Sending a simple response
@@ -45,4 +40,16 @@ server.listen(8080, () => {
   console.log("server running");
 });
 
- app.use("/", router());
+app.use("/", router());
+
+//
+// app.use(express.static(path.join(__dirname, "frontend/dist")));
+app.use("/", express.static(path.join(__dirname, "../frontend/dist")));
+
+// Serve the frontend application for all other routes
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
+// });
+app.use("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});

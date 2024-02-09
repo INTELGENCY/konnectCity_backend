@@ -1,2 +1,2 @@
-export * as PublicFunctions from './public'
-export * as AdminFunctions from './admin'
+export * as PublicFunctions from "./public";
+export * as AdminFunctions from "./admin";

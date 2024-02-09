@@ -1,2 +1,2 @@
-export {test} from './test'
-export { getAll } from "../public/getAll";
+export { test } from "./test";
+export { getAll } from "./getAll";

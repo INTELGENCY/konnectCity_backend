@@ -4,31 +4,28 @@ import MapBox from "../MapBox/MapBox";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button } from "bootstrap";
+import { keys } from "../../api";
 
 const UserPanel = () => {
   const [showData, setShowData] = useState([]);
-  const [type,setType]=useState('')
-  const [display,setDisplay]=useState(false)
+  const [type, setType] = useState("");
+  const [display, setDisplay] = useState(false);
   const [coordinates, setCoordinates] = useState({
     longitude: "",
     latitude: "",
   });
-  const [displayName,setDisplayName]=useState('')
-  console.log("the show data is",showData)
+  const [displayName, setDisplayName] = useState("");
+  console.log("the show data is", showData);
   const getAll = async () => {
     try {
-      const config = {
-        headers: { "Content-Type": "application/json" },
-      };
       let abc = "";
-      let result = await axios.post(
-        "http://localhost:8080/api/public/function/getAll",
-        { abc },
-        config
-      );
+      let result = await axios.post(keys.api + "public/function/getAll", {
+        abc,
+      });
+      console.log(result, "result");
       if (result?.data?.length > 0) {
         setShowData(result?.data);
-        setDisplay(true)
+        setDisplay(true);
       }
     } catch (error) {}
   };
@@ -40,8 +37,15 @@ const UserPanel = () => {
     <div className="h-100 w-100">
       <div className="row m-0 ">
         <div className="col col-9">
-          {display && <MapBox  coordinates={coordinates} type={type} setType={setType} displayName={displayName} showData={showData}/>
-        }
+          {display && (
+            <MapBox
+              coordinates={coordinates}
+              type={type}
+              setType={setType}
+              displayName={displayName}
+              showData={showData}
+            />
+          )}
         </div>
         <div
           className="col col-3"
@@ -66,7 +70,18 @@ const UserPanel = () => {
                       DailyImpression: {item?.Stats?.DailyImpression}
                     </p>
                     <div className="text-center">
-                      <button type="button" onClick={()=>{setCoordinates({longitude:item?.Coordinates?.longitude,latitude:item?.Coordinates?.latitude}),setType("user"),setDisplayName(item.BuildingName)}} className="btn btn-primary">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCoordinates({
+                            longitude: item?.Coordinates?.longitude,
+                            latitude: item?.Coordinates?.latitude,
+                          }),
+                            setType("user"),
+                            setDisplayName(item.BuildingName);
+                        }}
+                        className="btn btn-primary"
+                      >
                         View
                       </button>
                     </div>
