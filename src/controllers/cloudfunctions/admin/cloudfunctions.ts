@@ -9,7 +9,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
       error: "Req not found",
       message: "The requested API endpoint could not be found.",
     });
-  let cloudFunctionToCall: Function = cloudFunctions[cloudFunctionName];
+  let cloudFunctionToCall: any = cloudFunctions[cloudFunctionName];
   if (typeof cloudFunctionToCall !== "function")
     return res.json({ error: "Internal error" }).status(500);
   return cloudFunctionToCall(req, res);
