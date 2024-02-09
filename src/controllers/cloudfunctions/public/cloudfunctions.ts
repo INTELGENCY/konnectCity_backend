@@ -4,7 +4,7 @@ import { PublicFunctions } from "../../../functions/_exports";
 const cloudFunctions = { ...PublicFunctions };
 
 export default (req: Request, res: Response) => {
-  const { cloudFunctionName }: any = req.params;
+  const { cloudFunctionName } = req.params;
 
   if (!cloudFunctions.hasOwnProperty(cloudFunctionName))
     return res
