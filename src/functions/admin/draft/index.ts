@@ -35,17 +35,17 @@ export const draft = function (req: Request, res: Response) {
         return res.status(500).json({ error: err.message });
       }
       // try {
-        let data = JSON.parse(req.body.data);
-        data.status = JSON.parse(req.body.status);
-        data.coordinates= JSON.parse(req.body.Coordinates)
+      let data = JSON.parse(req.body.data);
+      data.status = JSON.parse(req.body.status);
+      data.coordinates = JSON.parse(req.body.Coordinates);
       // } catch (error) {
-        // console.error("Error parsing JSON:", error)
+      // console.error("Error parsing JSON:", error)
       // }
       if (!req.files) {
         // If req.file is undefined, handle the case accordingly
         return res.status(400).json({ error: "No file uploaded" });
       }
-      const urls = [];
+      const urls: string[] = [];
 
       let files: any;
       files = req.files;
@@ -56,25 +56,23 @@ export const draft = function (req: Request, res: Response) {
       }
       const multiImage = urls.map((url: any) => url.res);
       // return res.status(200).json(multiImage);
-        const result = await MapBox.create({
-            BuildingName: data.building_name,
-            Price: data.price,
-            Status: data.status,
-            Img_Url: multiImage,
-            Coordinates: {
-              longitude: data.coordinates.longitude,
-              latitude: data.coordinates.latitude,
-            },
-            Stats: {
-              Resold: 1,
-              Ads: 1,
-              TopAds:1,
-              DailyImpression: 1,
-            }
-        })
-      
+      const result = await MapBox.create({
+        BuildingName: data.building_name,
+        Price: data.price,
+        Status: data.status,
+        Img_Url: multiImage,
+        Coordinates: {
+          longitude: data.coordinates.longitude,
+          latitude: data.coordinates.latitude,
+        },
+        Stats: {
+          Resold: 1,
+          Ads: 1,
+          TopAds: 1,
+          DailyImpression: 1,
+        },
+      });
     });
-    
   } catch (error) {
     console.log("the catch error is", error);
   }
