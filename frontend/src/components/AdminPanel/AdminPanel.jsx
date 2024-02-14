@@ -13,10 +13,8 @@ const AdminPanel = () => {
     building_name: "",
     price: "",
   });
-  const [imageUrl, setImageUrl] = useState("");
   const [File, setFile] = useState([]);
   const formData = new FormData();
-  // console.log("The URL is", import.meta.env.VITE_REACT_APP_URL);
 
   // Draft and Published Button function
   const handleDraft = async(status) => {
@@ -33,13 +31,19 @@ const AdminPanel = () => {
       formData.append("data", JSON.stringify(data));
       formData.append("status",JSON.stringify(status));
       formData.append("Coordinates",JSON.stringify(admincoordinates))
-      console.log("the data  is", formData.get("data"));
-      if (status === "draft") {
+      if (status) {
         let response = await axios.post(
           keys.api + "admin/function/draft",
           formData,
           config
         );
+        console.log("the resposne is",response)
+        if(response.status===200){
+          setData({})
+          setAdminCoordinates({})
+          setFile([])
+
+        }
       }
     }
   };
@@ -48,25 +52,7 @@ const AdminPanel = () => {
 
   const handleFileChange = async (e) => {
     setFile(e.target.files);
-    // formData.append('file', file);
-    // formData.append('upload_preset', 'khcf0m6a');
-
-    // Make a POST request to Cloudinary's upload API
-    // try {
-    //   const response = await fetch('https://api.cloudinary.com/v1_1/maliknaseer/image/upload', {
-    //     method: 'POST',
-    //     body: formData,
-    //   });
-
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     setImageUrl(data.secure_url);
-    //   } else {
-    //     console.error('Failed to upload image');
-    //   }
-    // } catch (error) {
-    //   console.error('Error uploading image', error);
-    // }
+   
   };
   // console.log("after click the coordinates is",coordinates)
 
@@ -135,7 +121,7 @@ const AdminPanel = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDraft("draft")}
+                  onClick={() => handleDraft("published")}
                   className="btn btn-primary"
                 >
                   Published

@@ -40,6 +40,7 @@ server.listen(8080, () => {
   console.log("server running");
 });
 
+
 app.use("/", router());
 
 //
@@ -53,3 +54,6 @@ app.use("/", express.static(path.join(__dirname, "../frontend/dist")));
 app.use("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
+
+
+

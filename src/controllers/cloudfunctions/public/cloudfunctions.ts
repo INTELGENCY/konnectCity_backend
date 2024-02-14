@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import { PublicFunctions } from "../../../functions/_exports";
 
-const cloudFunctions = { ...PublicFunctions };
+const cloudFunctions:any = { ...PublicFunctions };
 
 export default (req: Request, res: Response) => {
   const { cloudFunctionName } = req.params;

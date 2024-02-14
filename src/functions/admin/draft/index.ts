@@ -3,6 +3,7 @@ import multer from "multer";
 import cloudinary from "cloudinary";
 // import MapBox from "models/Admin/mapmodel";
 import MapBox from "../../../models/Admin/mapmodel";
+import {adminMapboxResult} from '../../interfaces'
 // Set up multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -51,8 +52,8 @@ export const draft = function (req: Request, res: Response) {
       files = req.files;
       for (const file of files) {
         const { path } = file;
-        const newPath = await cloudinaryImageUploadMethod(path);
-        urls.push(newPath as never);
+        const newPath: any = await cloudinaryImageUploadMethod(path);
+        urls.push(newPath);
       }
       const multiImage = urls.map((url: any) => url.res);
       // return res.status(200).json(multiImage);
@@ -62,8 +63,8 @@ export const draft = function (req: Request, res: Response) {
         Status: data.status,
         Img_Url: multiImage,
         Coordinates: {
-          longitude: data.coordinates.longitude,
-          latitude: data.coordinates.latitude,
+          longitude: data?.coordinates?.longitude,
+          latitude: data?.coordinates?.latitude,
         },
         Stats: {
           Resold: 1,
@@ -72,6 +73,9 @@ export const draft = function (req: Request, res: Response) {
           DailyImpression: 1,
         },
       });
+      if(result){
+        res.status(200).json(result);
+      }
     });
   } catch (error) {
     console.log("the catch error is", error);

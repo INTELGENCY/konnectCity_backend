@@ -15,14 +15,9 @@ const UserPanel = () => {
     latitude: "",
   });
   const [displayName, setDisplayName] = useState("");
-  console.log("the show data is", showData);
   const getAll = async () => {
     try {
-      let abc = "";
-      let result = await axios.post(keys.api + "public/function/getAll", {
-        abc,
-      });
-      console.log(result, "result");
+      let result = await axios.get(keys.api + "public/function/getAll");
       if (result?.data?.length > 0) {
         setShowData(result?.data);
         setDisplay(true);
@@ -59,6 +54,7 @@ const UserPanel = () => {
                     src={item?.Img_Url[0]}
                     className="card-img-top me-0 pe-0"
                     alt="..."
+                    style={{maxHeight:200}}
                   />
                   <div className="card-body">
                     <h5 className="card-title">Name: {item.BuildingName}</h5>

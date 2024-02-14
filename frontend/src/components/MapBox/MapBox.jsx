@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import park from '../../assets/park.svg'
+import junction from '../../assets/junction.svg'
+import dollar_img from '../../assets/dollar_img.svg'
 import * as turf from "@turf/turf";
 import MapboxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 
@@ -37,13 +40,18 @@ const MapBox = (props) => {
       .setLngLat(map.getCenter())
       .addTo(map)
       .setPopup(new mapboxgl.Popup().setHTML(`<p>${props?.displayName}</p>`)); // Set the popup content
-    console.log("the show in mapbox is data is",props.showData)
     props?.showData &&  props?.showData?.forEach(item => {
         // const coordinates = item.Coordinates;
         // const buildingName = item.BuildingName;
     
         // Add the custom marker to the map
-        new mapboxgl.Marker()
+        // Create a new marker
+      const markerElement = document.createElement('div');
+      markerElement.className = 'custom-marker';
+      markerElement.style.backgroundImage = `url(${dollar_img})`;
+      markerElement.style.width = '30px'; // Set width of the marker
+      markerElement.style.height = '30px'; // Set height of the marker
+        new mapboxgl.Marker(markerElement)
             .setLngLat([item?.Coordinates.longitude, item?.Coordinates.latitude])
             .setPopup(new mapboxgl.Popup().setHTML(`<p>${item?.BuildingName}</p>`)) // Set the popup content
             .addTo(map);
@@ -57,8 +65,10 @@ const MapBox = (props) => {
       },
     });
 
-    map.addControl(draw);
-    let polygon = null;
+    map.doubleClickZoom.disable();
+
+    // map.addControl(draw);
+    // let polygon = null;
 
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -69,33 +79,33 @@ const MapBox = (props) => {
 
     map.addControl(geocoder, "top-left");
     // calculating the center point of polygoncoordinates
-    const calculateCentroid = (polygonCoordinates) => {
-      let xSum = 0;
-      let ySum = 0;
+    // const calculateCentroid = (polygonCoordinates) => {
+    //   let xSum = 0;
+    //   let ySum = 0;
 
-      // Iterate through all the vertices of the polygon
-      for (let i = 0; i < polygonCoordinates.length; i++) {
-        let vertex = polygonCoordinates[i];
-        xSum += vertex[0]; // Add x-coordinate
-        ySum += vertex[1]; // Add y-coordinate
-      }
+    //   // Iterate through all the vertices of the polygon
+    //   for (let i = 0; i < polygonCoordinates.length; i++) {
+    //     let vertex = polygonCoordinates[i];
+    //     xSum += vertex[0]; // Add x-coordinate
+    //     ySum += vertex[1]; // Add y-coordinate
+    //   }
 
-      // Calculate centroid coordinates
-      let centroidX = xSum / polygonCoordinates.length;
-      let centroidY = ySum / polygonCoordinates.length;
-      props?.setCoordinates({ longitude: centroidX, latitude: centroidY });
+    //   // Calculate centroid coordinates
+    //   let centroidX = xSum / polygonCoordinates.length;
+    //   let centroidY = ySum / polygonCoordinates.length;
+    //   props?.setCoordinates({ longitude: centroidX, latitude: centroidY });
 
-      return [centroidX, centroidY];
-    };
+    //   return [centroidX, centroidY];
+    // };
 
-    map.on("draw.create", (e) => {
-      polygon = e.features[0];
-      let polygonCoordinates = polygon.geometry.coordinates[0];
-      const centroid = calculateCentroid(polygonCoordinates);
+    // map.on("draw.create", (e) => {
+    //   polygon = e.features[0];
+    //   let polygonCoordinates = polygon.geometry.coordinates[0];
+    //   const centroid = calculateCentroid(polygonCoordinates);
 
-      const area = turf.area(polygon.geometry);
-      alert(`Area of the polygon: ${area} square meters`);
-    });
+    //   const area = turf.area(polygon.geometry);
+    //   alert(`Area of the polygon: ${area} square meters`);
+    // });
 
     map.on("load", () => {
       // setMap(mapInstance);
@@ -143,7 +153,6 @@ const MapBox = (props) => {
       //   accessToken: mapboxgl.accessToken,
       // });
       const coordinates = e.lngLat;
-      console.log("the coordinates is", coordinates);
       if (coordinates && props.type === "admin") {
         props?.setAdminCoordinates({
           longitude: coordinates.lng,
@@ -158,11 +167,12 @@ const MapBox = (props) => {
       fetch(reverseGeocodeUrl)
         .then((response) => response.json())
         .then((data) => {
+          console.log("the data is",data)
           // Extract building name or other relevant information from the response
           if (data.features && data.features.length > 0 && props.type==='admin') {
+            console.log("the data is",data.features)
             const buildingName = data.features[0].text; // Example: Retrieve the text of the first feature
             props.setData({ ...props.data, building_name: buildingName });
-            console.log("Building Name:", buildingName);
           } else {
             console.log("Building information not found.");
           }
@@ -200,13 +210,30 @@ const MapBox = (props) => {
 
   const addMarkersToMap = (features, type, map) => {
     features.forEach((feature) => {
-      // creating custom marker
-      const el = document.createElement("div");
-      el.className = type === "park" ? "park_marker" : "junction_marker";
-      new mapboxgl.Marker(el)
-        .setLngLat(feature.geometry.coordinates)
-        .addTo(map);
-    });
+      const color = type === "park" ? "green" : "red";
+      let image = type === "park" ? park : junction; // Set image paths based on type
+      
+      // Create a new marker
+      const markerElement = document.createElement('div');
+      markerElement.className = 'custom-marker';
+      markerElement.style.backgroundImage = `url(${image})`;
+      markerElement.style.width = '30px'; // Set width of the marker
+      markerElement.style.height = '30px'; // Set height of the marker
+
+      // Add marker to the map
+      new mapboxgl.Marker(markerElement)
+          .setLngLat(feature.geometry.coordinates)
+          .setPopup(new mapboxgl.Popup({ closeOnClick: false, maxWidth: '300px', width: "50px" }).setHTML(`<p >${color === "green" ? 'Park' : 'Junction'}</p>`))
+          .addTo(map);
+  });
+    // features.forEach((feature) => {
+    //   const color = type === "park" ? "green" : "red";
+    //   let image = type === "park" ? park : null;
+    //   new mapboxgl.Marker({color: color,})
+    //     .setLngLat(feature.geometry.coordinates)
+    //     .setPopup(new mapboxgl.Popup({ closeOnClick: false,maxWidth:'300px',width:"50px" }).setHTML(`<p >${color==="green"?'Park':'Junction'}</p>`))
+    //     .addTo(map);
+    // });
   };
 
   return (

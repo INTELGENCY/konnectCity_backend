@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import MapBox from './components/MapBox/MapBox'
 import AdminPanel from './components/AdminPanel/AdminPanel'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link,Navigate } from 'react-router-dom';
 import UserPanel from './components/UserPanel/UserPanel'
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
     <Router>
     <Routes>
       {/* <Route path="/" element={<Home />} /> */}
+      <Route path="/" element={<Navigate to="/user" />} />
       <Route path="/admin" element={<AdminPanel />} />
       <Route path="/user" element={<UserPanel />} />
     </Routes>

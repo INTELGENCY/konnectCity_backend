@@ -6,7 +6,7 @@ export default (router: express.Router) => {
   // for admin routes
   router.post("/api/admin/function/:cloudFunctionName", adminFunctions);
   // for public routes
-  router.post("/api/public/function/:cloudFunctionName", publicFunctions);
+  router.get("/api/public/function/:cloudFunctionName", publicFunctions);
   // for testing
   router.post("/api/test", function (req: Express.Request, res) {
     console.log("test api");
