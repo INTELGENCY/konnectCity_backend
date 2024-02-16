@@ -19,7 +19,7 @@ const AdminPanel = () => {
   })
   const [BuildingHeight,setBuildingHeight]=useState('')
   const [SeaLevelHeight,setSeaLevelHeight]=useState('')
-  const [File, setFile] = useState([]);
+  const [File, setFile] = useState([]) ;
   const formData = new FormData();
 
   // Draft and Published Button function
