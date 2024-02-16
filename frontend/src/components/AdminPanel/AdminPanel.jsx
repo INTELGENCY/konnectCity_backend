@@ -17,7 +17,7 @@ const AdminPanel = () => {
   const formData = new FormData();
 
   // Draft and Published Button function
-  const handleDraft = async(status) => {
+  const handleDraft = async(status)  => {
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
