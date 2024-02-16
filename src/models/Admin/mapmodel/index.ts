@@ -31,6 +31,12 @@ interface IUser extends Document {
     TopAds: number;
     DailyImpression: number;
   };
+  BuildingHeight: number;
+  SeaLevelHeight: number;
+  BuildingNearCoord:{
+    longitude: number;
+    latitude: number;
+  }
   createdAt: Date;
 }
 
@@ -49,6 +55,12 @@ const MapBoxSchema: Schema = new Schema({
     Ads: { type: Number, required: true },
     TopAds: { type: Number, required: true },
     DailyImpression: { type: Number, required: true },
+  },
+  BuildingHeight: {type: Number, required: true},
+  SeaLevelHeight: {type: Number, required: true},
+  BuildingNearCoord:{
+    longitude: { type: Number, required: true },
+    latitude: { type: Number, required: true },
   },
   createdAt: { type: Date, default: Date.now },
 });

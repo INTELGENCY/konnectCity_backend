@@ -3,7 +3,7 @@ import multer from "multer";
 import cloudinary from "cloudinary";
 // import MapBox from "models/Admin/mapmodel";
 import MapBox from "../../../models/Admin/mapmodel";
-import {adminMapboxResult} from '../../interfaces'
+import { adminMapboxResult } from "../../interfaces";
 // Set up multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -37,11 +37,12 @@ export const draft = function (req: Request, res: Response) {
       }
       // try {
       let data = JSON.parse(req.body.data);
+
       data.status = JSON.parse(req.body.status);
       data.coordinates = JSON.parse(req.body.Coordinates);
-      // } catch (error) {
-      // console.error("Error parsing JSON:", error)
-      // }
+      data.BuildingHeight = JSON.parse(req.body.BuildingHeight);
+      data.SeaLevelHeight = JSON.parse(req.body.SeaLevelHeight);
+      data.NearCoord = JSON.parse(req.body.NearCoord);
       if (!req.files) {
         // If req.file is undefined, handle the case accordingly
         return res.status(400).json({ error: "No file uploaded" });
@@ -72,8 +73,14 @@ export const draft = function (req: Request, res: Response) {
           TopAds: 1,
           DailyImpression: 1,
         },
+        BuildingHeight: data.BuildingHeight,
+        SeaLevelHeight: data.SeaLevelHeight,
+        BuildingNearCoord: {
+          longitude: data.NearCoord.longitude,
+          latitude: data.NearCoord.latitude,
+        },
       });
-      if(result){
+      if (result) {
         res.status(200).json(result);
       }
     });

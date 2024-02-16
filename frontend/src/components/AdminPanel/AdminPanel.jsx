@@ -13,6 +13,12 @@ const AdminPanel = () => {
     building_name: "",
     price: "",
   });
+  const [NearCoord,setNearCoord]=useState({
+    longitude: "",
+    latitude: "",
+  })
+  const [BuildingHeight,setBuildingHeight]=useState('')
+  const [SeaLevelHeight,setSeaLevelHeight]=useState('')
   const [File, setFile] = useState([]);
   const formData = new FormData();
 
@@ -27,9 +33,11 @@ const AdminPanel = () => {
       for (const file of File) {
         formData.append("file", file);
       }
-      let Status=status
       formData.append("data", JSON.stringify(data));
       formData.append("status",JSON.stringify(status));
+      formData.append("NearCoord",JSON.stringify(NearCoord));
+      formData.append("SeaLevelHeight",JSON.stringify(SeaLevelHeight));
+      formData.append("BuildingHeight",JSON.stringify(BuildingHeight));
       formData.append("Coordinates",JSON.stringify(admincoordinates))
       if (status) {
         let response = await axios.post(
@@ -37,7 +45,6 @@ const AdminPanel = () => {
           formData,
           config
         );
-        console.log("the resposne is",response)
         if(response.status===200){
           setData({})
           setAdminCoordinates({})
@@ -54,13 +61,12 @@ const AdminPanel = () => {
     setFile(e.target.files);
    
   };
-  // console.log("after click the coordinates is",coordinates)
 
   return (
     <div className="h-100 w-100">
       <div className="row m-0 ">
         <div className="col col-9">
-          <MapBox setAdminCoordinates={setAdminCoordinates} admincoordinates={admincoordinates} setData={setData} data={data} type="admin" />
+          <MapBox setAdminCoordinates={setAdminCoordinates} setSeaLevelHeight={setSeaLevelHeight} setBuildingHeight={setBuildingHeight} setNearCoord={setNearCoord} admincoordinates={admincoordinates} setData={setData} data={data} type="admin" />
         </div>
         <div
           className="col col-3"
