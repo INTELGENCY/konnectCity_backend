@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 
 // Create multer instance using custom storage
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).any();
 
 // Function for to cloudinary
 const cloudinaryImageUploadMethod = async (file: any) => {
@@ -30,7 +30,7 @@ const cloudinaryImageUploadMethod = async (file: any) => {
 
 export const draft = function (req: Request, res: Response) {
   try {
-    upload.array("file")(req, res, async function (err: any) {
+    upload(req, res, async function (err: any) {
       if (err) {
         // Handle multer errors
         return res.status(500).json({ error: err.message });
@@ -48,13 +48,22 @@ export const draft = function (req: Request, res: Response) {
         return res.status(400).json({ error: "No file uploaded" });
       }
       const urls: string[] = [];
+      let ads_img_url: string='';
 
       let files: any;
       files = req.files;
+      let file:any = req.file;
+      // console.log("the files is",files)
       for (const file of files) {
+        // console.log("the file is",file)
         const { path } = file;
         const newPath: any = await cloudinaryImageUploadMethod(path);
+        if(file.fieldname==='adsImage'){
+         ads_img_url= newPath.res;
+        }else{
         urls.push(newPath);
+      }
+      
       }
       const multiImage = urls.map((url: any) => url.res);
       // return res.status(200).json(multiImage);
@@ -79,6 +88,7 @@ export const draft = function (req: Request, res: Response) {
           longitude: data.NearCoord.longitude,
           latitude: data.NearCoord.latitude,
         },
+        AdsImgUrl: ads_img_url
       });
       if (result) {
         res.status(200).json(result);

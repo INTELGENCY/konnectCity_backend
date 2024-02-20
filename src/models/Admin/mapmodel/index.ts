@@ -37,6 +37,7 @@ interface IUser extends Document {
     longitude: number;
     latitude: number;
   }
+  AdsImgUrl: string;
   createdAt: Date;
 }
 
@@ -62,6 +63,7 @@ const MapBoxSchema: Schema = new Schema({
     longitude: { type: Number, required: true },
     latitude: { type: Number, required: true },
   },
+  AdsImgUrl:{type: String, required: true},
   createdAt: { type: Date, default: Date.now },
 });
 

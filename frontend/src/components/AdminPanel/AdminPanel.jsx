@@ -20,47 +20,52 @@ const AdminPanel = () => {
   const [BuildingHeight,setBuildingHeight]=useState('')
   const [SeaLevelHeight,setSeaLevelHeight]=useState('')
   const [File, setFile] = useState([]) ;
+  const [AdsImage,setAdsImage]=useState('')
   const formData = new FormData();
+  
 
-  // Draft and Published Button function
-  const handleDraft = async(status)  => {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-    if (data.building_name !== "" && data.price !== "" && File.length > 0 && admincoordinates.latitude!=='' && admincoordinates.longitude!=='') {
-      for (const file of File) {
-        formData.append("file", file);
-      }
-      formData.append("data", JSON.stringify(data));
-      formData.append("status",JSON.stringify(status));
-      formData.append("NearCoord",JSON.stringify(NearCoord));
-      formData.append("SeaLevelHeight",JSON.stringify(SeaLevelHeight));
-      formData.append("BuildingHeight",JSON.stringify(BuildingHeight));
-      formData.append("Coordinates",JSON.stringify(admincoordinates))
-      if (status) {
-        let response = await axios.post(
-          keys.api + "admin/function/draft",
-          formData,
-          config
-        );
-        if(response.status===200){
-          setData({})
-          setAdminCoordinates({})
-          setFile([])
+const handleDraft = async (status) => {
+  const formData = new FormData();
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
 
-        }
+  const requiredFields = [data.building_name, data.price, File.length, admincoordinates.latitude, admincoordinates.longitude];
+  if (requiredFields.every(field => field !== "")) {
+    // File.forEach(file => formData.append("file", file));
+    for (const file of File) {
+            formData.append("file", file);
+          }
+    formData.append("adsImage", AdsImage);
+    formData.append("data", JSON.stringify(data));
+    formData.append("status", JSON.stringify(status));
+    formData.append("NearCoord", JSON.stringify(NearCoord));
+    formData.append("SeaLevelHeight", JSON.stringify(SeaLevelHeight));
+    formData.append("BuildingHeight", JSON.stringify(BuildingHeight));
+    formData.append("Coordinates", JSON.stringify(admincoordinates));
+
+    if (status) {
+      const response = await axios.post(keys.api + "admin/function/draft", formData, config);
+      if (response.status === 200) {
+        setData({});
+        setAdminCoordinates({});
+        setFile([]);
       }
     }
-  };
+  }
+};
 
   // upload image function
 
   const handleFileChange = async (e) => {
-    setFile(e.target.files);
-   
+    setFile(e.target.files);  
   };
+  const handleAdsImage = async (e) => {
+    setAdsImage(e.target.files[0]);  
+  };
+  console.log("ads image",AdsImage)
 
   return (
     <div className="h-100 w-100">
@@ -108,13 +113,23 @@ const AdminPanel = () => {
                 />
               </div>
               <div className="mb-3">
-                {/* <label className="form">Building Name:</label> */}
+                <label className="form">Add Building Image:</label>
                 <input
                   multiple
                   name="file"
                   type="file"
                   className="form-control"
                   onChange={handleFileChange}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form">Add Ads Image:</label>
+                <input
+                  // multiple
+                  name="ads_img"
+                  type="file"
+                  className="form-control"
+                  onChange={handleAdsImage}
                 />
               </div>
               <div className="d-flex justify-content-center gap-3">

@@ -4,6 +4,7 @@ import { AdminFunctions } from "../../../functions/_exports";
 const cloudFunctions: any = { ...AdminFunctions };
 export default (req: Request, res: Response, next: NextFunction) => {
   const { cloudFunctionName } = req.params;
+  console.log("the cloud function is",cloudFunctionName)
   if (!cloudFunctions.hasOwnProperty(cloudFunctionName))
     return res.json({
       error: "Req not found",
