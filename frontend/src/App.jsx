@@ -6,6 +6,7 @@ import MapBox from './components/MapBox/MapBox'
 import AdminPanel from './components/AdminPanel/AdminPanel'
 import { BrowserRouter as Router, Routes, Route, Link,Navigate } from 'react-router-dom';
 import UserPanel from './components/UserPanel/UserPanel'
+import BusinessPanel from './components/BusinessPanel/BusinessPanel'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,6 +22,7 @@ function App() {
       <Route path="/" element={<Navigate to="/user" />} />
       <Route path="/admin" element={<AdminPanel />} />
       <Route path="/user" element={<UserPanel />} />
+      <Route path="/business" element={<BusinessPanel />} />
     </Routes>
   </Router>
   )

@@ -1,20 +1,6 @@
 // Import mongoose
 import mongoose, { Schema, Document } from "mongoose";
 
-// // interface for coordinates
-// interface Coordinates {
-//   longitude: number;
-//   latitude: number;
-// }
-
-// // interface for stats
-// interface Stats {
-//   Resold: number;
-//   Ads: number;
-//   TopAds: number;
-//   DailyImpression: number;
-// }
-
 // Define interface representing a document in MongoDB
 interface IUser extends Document {
   BuildingName: string;
@@ -63,7 +49,7 @@ const MapBoxSchema: Schema = new Schema({
     longitude: { type: Number, required: true },
     latitude: { type: Number, required: true },
   },
-  AdsImgUrl:{type: String, required: true},
+  // AdsImgUrl:{type: String, required: true},
   createdAt: { type: Date, default: Date.now },
 });
 

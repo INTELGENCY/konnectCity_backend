@@ -14,7 +14,7 @@ const UserPanel = () => {
     longitude: "",
     latitude: "",
   });
-  const [displayName, setDisplayName] = useState("");
+  const [buildingDetail, setBuildingDetail] = useState({});
   const getAll = async () => {
     try {
       let result = await axios.get(keys.api + "public/function/getAll");
@@ -31,30 +31,33 @@ const UserPanel = () => {
   return (
     <div className="h-100 w-100">
       <div className="row m-0 ">
-        <div className="col col-9">
+        <div className="col col-12">
           {display && (
             <MapBox
               coordinates={coordinates}
               type={type}
               setType={setType}
-              displayName={displayName}
+              buildingDetail={buildingDetail}
               showData={showData}
             />
           )}
         </div>
         <div
-          className="col col-3"
-          style={{ maxHeight: "100vh", overflowY: "scroll" }}
+          className="col col-12"
+          // style={{ maxHeight: "100vh", overflowY: "scroll" }}
         >
-          <div className="row">
+          <div className="mt-4" style={{display: display? "block": "none"}}>
+            <h1 className="text-center">Buildings For Selling</h1>
+          </div>
+          <div className="row mb-4">
             {showData?.map((item, index) => (
-              <div className="col-12 mt-4" key={index}>
+              <div className="col-3 mt-4" key={index}>
                 <div className="card">
                   <img
                     src={item?.Img_Url[0]}
                     className="card-img-top me-0 pe-0"
                     alt="..."
-                    style={{maxHeight:200}}
+                    style={{maxHeight:300, objectFit:"cover"}}
                   />
                   <div className="card-body">
                     <h5 className="card-title">Name: {item.BuildingName}</h5>
@@ -74,7 +77,7 @@ const UserPanel = () => {
                             latitude: item?.Coordinates?.latitude,
                           }),
                             setType("user"),
-                            setDisplayName(item.BuildingName);
+                            setBuildingDetail(item);
                         }}
                         className="btn btn-primary"
                       >

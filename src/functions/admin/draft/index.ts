@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import multer from "multer";
 import cloudinary from "cloudinary";
-// import MapBox from "models/Admin/mapmodel";
 import MapBox from "../../../models/Admin/mapmodel";
 import { adminMapboxResult } from "../../interfaces";
 // Set up multer storage configuration
@@ -41,7 +40,7 @@ export const draft = function (req: Request, res: Response) {
       data.status = JSON.parse(req.body.status);
       data.coordinates = JSON.parse(req.body.Coordinates);
       data.BuildingHeight = JSON.parse(req.body.BuildingHeight);
-      data.SeaLevelHeight = JSON.parse(req.body.SeaLevelHeight);
+      // data.SeaLevelHeight = JSON.parse(req?.body?.SeaLevelHeight);
       data.NearCoord = JSON.parse(req.body.NearCoord);
       if (!req.files) {
         // If req.file is undefined, handle the case accordingly
@@ -83,12 +82,12 @@ export const draft = function (req: Request, res: Response) {
           DailyImpression: 1,
         },
         BuildingHeight: data.BuildingHeight,
-        SeaLevelHeight: data.SeaLevelHeight,
+        SeaLevelHeight: data?.SeaLevelHeight?data?.SeaLevelHeight:0,
         BuildingNearCoord: {
           longitude: data.NearCoord.longitude,
           latitude: data.NearCoord.latitude,
         },
-        AdsImgUrl: ads_img_url
+        // AdsImgUrl: ads_img_url
       });
       if (result) {
         res.status(200).json(result);
