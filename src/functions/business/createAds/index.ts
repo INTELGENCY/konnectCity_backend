@@ -33,25 +33,28 @@ export const createAds = function (req: Request, res: Response) {
         res.status(500).json({ error: err.message });
       }
       let data = JSON.parse(req.body.data);
-      let url: string="";
+      let url: string = "";
       // Ensure req.files is defined and it's an array of files
       if (req.files) {
         // Use type assertion to tell TypeScript that req.files is an array of files
         for (const file of req.files as Express.Multer.File[]) {
-            const { path } = file;
-            const newPath: any = await cloudinaryImageUploadMethod(path);
-            url = newPath.res;
+          const { path } = file;
+          const newPath: any = await cloudinaryImageUploadMethod(path);
+          url = newPath.res;
         }
       } else {
         // Handle the case where req.files is undefined
         console.error("No files uploaded");
       }
       const result = await AdModel.create({
-          AdsDetail: data.AdsDetail,
-          AdsUrl: url,
-          Price: data.Price,
-          Link: data.Link,
-      })
+        AdsDetail: data.AdsDetail,
+        AdsUrl: url,
+        Price: data.Price,
+        Link: data.Link,
+        Stats: {
+          Impression: 0,
+        },
+      });
       res.status(200).send(result);
     });
     // res.status(200).send(req.body)
