@@ -40,7 +40,7 @@ export const draft = function (req: Request, res: Response) {
       data.status = JSON.parse(req.body.status);
       data.coordinates = JSON.parse(req.body.Coordinates);
       data.BuildingHeight = JSON.parse(req.body.BuildingHeight);
-      // data.SeaLevelHeight = JSON.parse(req?.body?.SeaLevelHeight);
+      data.SeaLevelHeight = JSON.parse(req?.body?.SeaLevelHeight);
       data.NearCoord = JSON.parse(req.body.NearCoord);
       if (!req.files) {
         // If req.file is undefined, handle the case accordingly
@@ -82,7 +82,7 @@ export const draft = function (req: Request, res: Response) {
           DailyImpression: 1,
         },
         BuildingHeight: data.BuildingHeight,
-        SeaLevelHeight: data?.SeaLevelHeight?data?.SeaLevelHeight:0,
+        SeaLevelHeight: data?.SeaLevelHeight ? data?.SeaLevelHeight:0,
         BuildingNearCoord: {
           longitude: data.NearCoord.longitude,
           latitude: data.NearCoord.latitude,

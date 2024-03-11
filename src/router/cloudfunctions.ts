@@ -11,6 +11,7 @@ export default (router: express.Router) => {
   // for Business routes
   router.post("/api/business/function/:cloudFunctionName", businessFunctions);
   router.get("/api/business/function/:cloudFunctionName", businessFunctions);
+  router.delete("/api/business/function/:cloudFunctionName/:id", businessFunctions);
   // for testing
   router.post("/api/test", function (req: Express.Request, res) {
     console.log("test api");

@@ -22,6 +22,7 @@ function App() {
       <Route path="/" element={<Navigate to="/user" />} />
       <Route path="/admin" element={<AdminPanel />} />
       <Route path="/user" element={<UserPanel />} />
+      <Route path="/business/:lng/:lat/:height" element={<BusinessPanel />} />
       <Route path="/business" element={<BusinessPanel />} />
     </Routes>
   </Router>

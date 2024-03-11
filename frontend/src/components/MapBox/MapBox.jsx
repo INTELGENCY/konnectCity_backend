@@ -12,12 +12,14 @@ import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./MapBox.css";
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
+import { useNavigate } from "react-router-dom";
 mapboxgl.accessToken =
   "pk.eyJ1IjoibWFsaWtuYXNlZXIxMjMiLCJhIjoiY2xyeXMyanFxMXEwazJrcXYzYTF3b2tzayJ9.ztggMSYLNixVHhD8bxgKUw";
 const MapBox = (props) => {
   // const [map, setMap] = useState(null);
   const [map, setMap] = useState(null);
   const [sidebarInfo, setSidebarInfo] = useState(null);
+  const navigate = useNavigate();
 
   const openSidebar = (info) => {
     setSidebarInfo(info);
@@ -284,6 +286,7 @@ const MapBox = (props) => {
         }
         const data = await response.json();
         const elevationResult = data.features[0].properties.ele;
+        console.log("the elevation is", data.features[0].properties.ele);
         props.setSeaLevelHeight(elevationResult);
       } catch (error) {
         console.error("Error fetching elevation:", error);
@@ -490,7 +493,7 @@ const MapBox = (props) => {
           <p>Ads: {sidebarInfo.Stats.Ads}</p>
           <p>TopAds: {sidebarInfo.Stats.TopAds}</p>
           <div className="text-center">
-            <Button variant="contained" onClick={closeSidebar}>
+            <Button variant="contained" onClick={()=> navigate(`/business/${sidebarInfo.Coordinates.longitude}/${sidebarInfo.Coordinates.latitude}/${sidebarInfo.SeaLevelHeight}`) }>
               Purchase
             </Button>
           </div>

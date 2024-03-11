@@ -11,12 +11,16 @@ import axios from "axios";
 import React, { useState } from "react";
 import { keys } from "../../../api";
 
-function CreateAds() {
+function CreateAds(props) {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewURL, setPreviewURL] = useState("");
-  const [adsDetail, setAdsDetail] = useState("");
+  const [previewURL, setPreviewURL] = useState(
+    Object.keys(props?.data).length !== 0 ? props.data.AdsUrl : ""
+  );
+  const [adsDetail, setAdsDetail] = useState(
+    Object.keys(props?.data).length !== 0 ? props?.data?.AdsDetail : ""
+  );
   const [price, setPrice] = useState("");
-  const [link, setLink] = useState("");
+  const [link, setLink] = useState(Object.keys(props?.data).length !== 0 ? props?.data?.Link : "");
   const [showScroll, setShowScroll] = useState(false);
   const [loader, setLoader] = useState(false);
 
@@ -34,9 +38,18 @@ function CreateAds() {
     const formData = new FormData();
     let data = {
       AdsDetail: adsDetail,
-      Price: 1234,
+      // Price: 1234,
       Link: link,
+      Coordinates: {
+        longitude: props?.lng,
+        latitude: props?.lat,
+      },
+      SeaLevel_Height: props?.height,
     };
+   if(Object.keys(props?.data).length !== 0){
+    data._id = props.data._id
+    props.setRender(true)
+   }
     formData.append("data", JSON.stringify(data));
     formData.append("file", selectedFile);
     try {
@@ -45,12 +58,19 @@ function CreateAds() {
           "Content-Type": "multipart/form-data",
         },
       };
+      let url;
+      if (Object.keys(props?.data).length !== 0) {
+        url = keys.api + "business/function/updateAd" ;
+      } else {
+        url = keys.api + "business/function/createAds";
+      }
       const response = await axios.post(
-        keys.api + "business/function/createAds",
+        url,
         formData,
         config
       );
       if (response.status === 200) {
+        props.setPublishedAdId(response?.data?._id);
         setPreviewURL("");
         setSelectedFile(null);
         setAdsDetail("");
@@ -58,6 +78,7 @@ function CreateAds() {
         setLink("");
         setShowScroll(false);
         setLoader(false);
+        Object.keys(props?.data).length !== 0 && props?.setData({})
       }
     } catch (error) {
       console.log("the error is", error);
@@ -158,12 +179,14 @@ function CreateAds() {
             variant="contained"
             color="primary"
             onClick={handleSubmit}
-            disabled={!selectedFile || !adsDetail }
+            disabled={props?.data ? false : !selectedFile || !adsDetail}
           >
             {loader ? (
               <Box sx={{ display: "flex" }}>
-                <CircularProgress color="inherit" size={26}/>
+                <CircularProgress color="inherit" size={26} />
               </Box>
+            ) : Object.keys(props?.data).length !== 0  ? (
+              "Update"
             ) : (
               "Submit"
             )}

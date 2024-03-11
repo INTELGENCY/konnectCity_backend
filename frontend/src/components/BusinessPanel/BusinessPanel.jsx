@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Container from "@mui/material/Container";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ControlPointSharpIcon from "@mui/icons-material/ControlPointSharp";
 import { styled } from "@mui/material/styles";
 import CardHeader from "@mui/material/CardHeader";
@@ -21,6 +21,9 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 // import lang_img from "../../assets/land.jpg";
 import lang_img from "../../assets/img_1.jpg";
 import CreateAds from "./CreateAds/CreateAds";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { keys } from "../../api";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -35,8 +38,16 @@ const ExpandMore = styled((props) => {
 
 function BusinessPanel() {
   const [show, setShow] = useState("");
-
+  const [data, setData] = useState({});
+  const [hide, setHide] = useState(true);
+  const { lng, lat, height } = useParams();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [publishedAdId, setPublishedAdId] = useState(
+    "65e70f346dfabb340a018ed7"
+  );
+  const [render,setRender]=useState(false)
+
+  console.log("the published id is", publishedAdId);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -48,6 +59,62 @@ function BusinessPanel() {
   const handleClick = (type) => {
     setShow(type);
   };
+  useEffect(() => {
+    getAd();
+  }, [publishedAdId,render]);
+  const getAd = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (publishedAdId) {
+        const response = await axios.post(
+          keys.api + "business/function/getAdById",
+          { _id: publishedAdId },config
+        );
+
+        if (response.data) {
+          setRender(false)
+          setHide(false);
+          setData(response.data);
+        } else {
+          return;
+        }
+
+        // return response.data;
+      } else {
+        console.log("No ad ID provided");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error while fetching ad:", error);
+      throw error;
+    }
+  };
+  const deleteAd = async (id) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios.delete(
+        keys.api + `business/function/deleteAd/${id}`,config
+      );
+      console.log(response); // Log success message
+      if (response.status === 200) {
+        setAnchorEl(null);
+        setShow("");
+        setData({});
+        setHide(true);
+      }
+    } catch (error) {
+      console.error("Error while deleting ad:", error);
+      throw error;
+    }
+  };
   return (
     <Box
       style={{
@@ -55,11 +122,12 @@ function BusinessPanel() {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        backgroundColor: "#5a6373",
+        // backgroundColor: "#5a6373",
+        
       }}
     >
-      <Container maxWidth="md">
-        <Card variant="outlined" style={{ position: "relative" }}>
+      <Container maxWidth="md" >
+        <Card variant="outlined" style={{ position: "relative",borderRadius: "20px",boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" }}>
           <CardContent>
             <Typography variant="h5" gutterBottom>
               Post Ads
@@ -73,6 +141,7 @@ function BusinessPanel() {
               <Button
                 variant="contained"
                 onClick={() => handleClick("Published")}
+                disabled={hide}
               >
                 Published
               </Button>
@@ -82,7 +151,11 @@ function BusinessPanel() {
               >
                 Previous
               </Button>
-              <Button variant="contained" onClick={() => handleClick("Add")}>
+              <Button
+                variant="contained"
+                disabled={!lng || !lat || !height}
+                onClick={() => handleClick("Add")}
+              >
                 Create
               </Button>
             </Stack>
@@ -98,8 +171,10 @@ function BusinessPanel() {
               >
                 <Card
                   sx={{
-                    maxWidth: 345,
-                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                    // maxWidth: 345,
+                    width: 345,
+                    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                    borderRadius: "20px",
                   }}
                 >
                   <CardHeader
@@ -109,49 +184,56 @@ function BusinessPanel() {
                     //     </Avatar>
                     //   }
                     action={
-                      show === "Published" &&
-                      <IconButton
-                        aria-label="settings"
-                        onClick={handleMenuClick}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
+                      show === "Published" && (
+                        <IconButton
+                          aria-label="settings"
+                          onClick={handleMenuClick}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      )
                     }
-                    title={show==="Published" ? "Abdul Rehman" : "Malik Naseer"}
-                    subheader={show==="Published" ? "10 minutes ago" : "23 hours ago"}
+                    title={
+                      show === "Published" ? "Abdul Rehman" : "Malik Naseer"
+                    }
+                    subheader={
+                      show === "Published" ? "10 minutes ago" : "23 hours ago"
+                    }
                   />
-                  {show === "Published" &&
-                  <Menu
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "right",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    PaperProps={{
-                      style: {
+                  {show === "Published" && (
+                    <Menu
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      PaperProps={{
+                        style: {
                           // maxHeight: 200,
                           minWidth: 150,
                           // marginTop: 40, // Adjust this value according to your needs
-                      },
-                  }}
-                  >
-                    <MenuItem onClick={handleClose}>Edit</MenuItem>
-                    <MenuItem onClick={handleClose}>Update</MenuItem>
-                    <MenuItem onClick={handleClose}>Delete</MenuItem>
-                  </Menu>
-                  }
+                        },
+                      }}
+                    >
+                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem onClick={()=>{setShow("Add"),setAnchorEl(null)}}>Update</MenuItem>
+                      <MenuItem onClick={() => deleteAd(data?._id)}>
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  )}
                   <CardMedia
                     component="img"
                     height="194"
-                    image={lang_img}
-                    alt="Paella dish"
+                    image={(data && show==="Published") ? data?.AdsUrl : lang_img}
+                    alt="Ads Image"
                   />
                   <CardContent>
                     <Box
@@ -160,18 +242,22 @@ function BusinessPanel() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <Typography>{show === "Published" ? "Land#2" : "Land#1"}</Typography>
+                      <Typography>
+                        {show === "Published" ? "Land#2" : "Land#1"}
+                      </Typography>
                       {/* <Typography>Price: {show===
                         "Published" ? "897" : "145"}</Typography> */}
                     </Box>
                     <Typography variant="body2" color="text.secondary">
-                    These include floor plans, elevations, sections, and details that illustrate the layout and design of the building.
+                      {(data && show==="Published")
+                        ? data?.AdsDetail
+                        : "These include floor plans, elevations, sections, and details that illustrate the layout and design of the building."}
                     </Typography>
                   </CardContent>
                   <Box
                     style={{
                       display: "flex",
-                      justifyContent: "end",
+                      justifyContent: "center",
                       marginBottom: "10px",
                       marginRight: "10px",
                     }}
@@ -181,7 +267,17 @@ function BusinessPanel() {
                 </Card>
               </Box>
             )}
-            {show === "Add" && <CreateAds />}
+            {show === "Add" && (
+              <CreateAds
+                lng={lng}
+                lat={lat}
+                height={height}
+                setPublishedAdId={setPublishedAdId}
+                data={data}
+                setData={setData}
+                setRender={setRender}
+              />
+            )}
           </CardContent>
         </Card>
       </Container>

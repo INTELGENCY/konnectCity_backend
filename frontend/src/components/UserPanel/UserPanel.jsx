@@ -15,6 +15,7 @@ const UserPanel = () => {
     latitude: "",
   });
   const [buildingDetail, setBuildingDetail] = useState({});
+  const [adsCoordinates, setAdsCoordinates] = useState({});
   const getAll = async () => {
     try {
       let result = await axios.get(keys.api + "public/function/getAll");
@@ -39,6 +40,7 @@ const UserPanel = () => {
               setType={setType}
               buildingDetail={buildingDetail}
               showData={showData}
+              setAdsCoordinates={setAdsCoordinates}
             />
           )}
         </div>

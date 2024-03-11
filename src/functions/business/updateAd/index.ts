@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import AdModel, { Ad } from "../../../models/Business/AdModel";
 import multer from "multer";
 import cloudinary from "cloudinary";
-import AdModel from "../../../models/Business/AdModel";
 
 // Set up multer storage configuration
 const storage = multer.diskStorage({
@@ -26,14 +26,14 @@ const cloudinaryImageUploadMethod = async (file: any) => {
   });
 };
 
-export const createAds = function (req: Request, res: Response) {
+export const updateAd = async function (req: Request, res: Response) {
   try {
     upload(req, res, async function (err: any) {
       if (err) {
         res.status(500).json({ error: err.message });
       }
       let data = JSON.parse(req.body.data);
-       console.log("the data is", data);
+      let id: string | undefined = data._id;
       let url: string = "";
       // Ensure req.files is defined and it's an array of files
       if (req.files) {
@@ -47,21 +47,25 @@ export const createAds = function (req: Request, res: Response) {
         // Handle the case where req.files is undefined
         console.error("No files uploaded");
       }
-      const result = await AdModel.create({
-        AdsDetail: data.AdsDetail,
-        AdsUrl: url,
-        // Price: data.Price,
-        Link: data.Link,
-        Stats: {
-          Impression: 0,
-        },
-        Coordinates: data.Coordinates,
-        SeaLevel_Height: data.SeaLevel_Height,
-      });
-      console.log("the result is", result);
-      res.status(200).send(result);
+      const doc = await AdModel.findById({ _id: id });
+      if (doc) {
+        const result: Ad | null = await AdModel.findByIdAndUpdate(
+          { _id: id },
+          {
+            $set: {
+              AdsDetail: data.AdsDetail,
+              Link: data.Link,
+              AdsUrl: req.files?.length !== 0 ? url : data.AdsUrl,
+            },
+          },
+          { new: true }
+        );
+
+        res.status(200).send(result);
+      } else {
+        console.log("Document not found.");
+      }
     });
-    // res.status(200).send(req.body)
   } catch (error) {
     console.log("the error is", error);
   }
